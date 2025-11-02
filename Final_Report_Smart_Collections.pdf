@@ -1,0 +1,64 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 5 0 R >>
+stream
+BT
+/F1 12 Tf
+72 720 Td
+(Architecture & Design Decisions) Tj
+0 -14 Td
+(----------------------------------) Tj
+0 -28 Td
+(Smart Collections is designed as a modular JavaFX application. The architecture separates the UI, data models, and services to ensure scalability and maintainability. The Main class handles UI and event logic, while models like Item and Task encapsulate data. Services like IndexService manage indexing and searching.) Tj
+0 -42 Td
+(Data Structure Choices & Complexity Trade-offs) Tj
+0 -14 Td
+(------------------------------------------------) Tj
+0 -28 Td
+(Appropriate data structures were chosen for each feature. ObservableList is used for the library to support dynamic updates in the UI. Stack is used for undo and recently viewed operations due to its LIFO nature. PriorityQueue is used for task management to ensure tasks are processed by priority. Maps and Sets are used for efficient indexing and duplicate prevention.) Tj
+0 -42 Td
+(I/O Format & Serialization Plan) Tj
+0 -14 Td
+(--------------------------------) Tj
+0 -28 Td
+(Object I/O is used for saving and loading the library, indices, and tasks. A versioned file header ensures compatibility. The app gracefully handles corrupted or missing files by starting with an empty library.) Tj
+0 -42 Td
+(Testing Strategy & Known Limitations) Tj
+0 -14 Td
+(------------------------------------) Tj
+0 -28 Td
+(Manual testing was conducted to verify all features, including recursive folder import, undo functionality, and media playback. Known limitations include the lack of automated tests and potential performance issues with large libraries.) Tj
+0 -42 Td
+(Future Work) Tj
+0 -14 Td
+(-----------) Tj
+0 -28 Td
+(Future improvements include adding automated tests, optimizing performance for large libraries, and supporting additional media formats.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Length 1234 >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000010 00000 n 
+0000000067 00000 n 
+0000000112 00000 n 
+0000000178 00000 n 
+0000001234 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1234
+%%EOF

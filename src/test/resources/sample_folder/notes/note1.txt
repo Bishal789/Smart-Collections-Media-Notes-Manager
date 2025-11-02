@@ -1,0 +1,1 @@
+This is a sample note file for testing recursive folder import.
