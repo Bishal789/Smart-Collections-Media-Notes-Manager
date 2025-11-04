@@ -15,7 +15,7 @@ public class Item implements Serializable {
     private String pathOrUrl;
     private ItemType type;
     private final Instant createdAt;
-    private int rating; // Rating from 1 to 5
+    private int rating;
 
     public Item(String title, ItemType type, String pathOrUrl) {
         this.id = UUID.randomUUID();

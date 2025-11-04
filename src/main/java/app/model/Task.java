@@ -10,7 +10,7 @@ public class Task implements Serializable, Comparable<Task> {
     private final UUID itemId;
     private String description;
     private Instant deadline;
-    private int priority; // Lower value = higher priority
+    private int priority;
     private Item item;
 
     public Task(UUID itemId, String description, Instant deadline, int priority) {
@@ -41,7 +41,6 @@ public class Task implements Serializable, Comparable<Task> {
 
     @Override
     public int compareTo(Task other) {
-        // Higher priority first, then earlier deadline
         int cmp = Integer.compare(this.priority, other.priority);
         if (cmp == 0 && this.deadline != null && other.deadline != null) {
             cmp = this.deadline.compareTo(other.deadline);

@@ -39,17 +39,17 @@ public class Main extends Application {
     private ComboBox<ItemType> typeBox;
     private TextField pathField;
     private MediaView mediaView;
-    private MediaPlayer mediaPlayer; // Declare MediaPlayer as a class-level variable
+    private MediaPlayer mediaPlayer;
     private TextField taskDescField;
     private DatePicker taskDeadlinePicker;
     private Spinner<Integer> taskPrioritySpinner;
     private ListView<Task> taskListView;
 
-    private TextField tagsField; // For tags
-    private Slider ratingSlider; // For rating
-    private Label createdAtLabel; // For createdAt
+    private TextField tagsField;
+    private Slider ratingSlider;
+    private Label createdAtLabel;
 
-    private GridPane detailGrid; // Declare detailGrid as a class-level variable
+    private GridPane detailGrid;
 
     private final String DATA_FILE = System.getProperty("user.dir") + File.separator + "library.dat";
 
@@ -57,7 +57,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        // ListView and detail pane
         listView = new ListView<>(library);
         listView.setPrefWidth(200);
 
@@ -81,40 +80,34 @@ public class Main extends Application {
         taskPrioritySpinner = new Spinner<>(1, 5, 3);
         Button addTaskBtn = new Button("Add Study Task");
 
-        // Initialize taskListView before loading the library
         taskListView = new ListView<>();
         taskListView.setPrefHeight(100);
         updateTaskListView();
 
-        // Load library from file
         loadLibrary();
 
-        // Initialize detailGrid
         detailGrid = new GridPane();
         detailGrid.setHgap(15);
         detailGrid.setVgap(12);
         detailGrid.setPadding(new Insets(20, 20, 20, 20));
 
-        // Ensure columns for Item Details and Media Preview are sized properly
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setMinWidth(100); col1.setPrefWidth(120); // Item Details label
+        col1.setMinWidth(100); col1.setPrefWidth(120);
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setMinWidth(150); col2.setPrefWidth(180); // Item Details field
+        col2.setMinWidth(150); col2.setPrefWidth(180);
         ColumnConstraints col3 = new ColumnConstraints();
-        col3.setMinWidth(100); col3.setPrefWidth(120); // Item Details field
+        col3.setMinWidth(100); col3.setPrefWidth(120);
         ColumnConstraints col4 = new ColumnConstraints();
-        col4.setMinWidth(50);  col4.setPrefWidth(100); // Media Preview
+        col4.setMinWidth(50);  col4.setPrefWidth(100);
         ColumnConstraints col5 = new ColumnConstraints();
-        col5.setMinWidth(150); col5.setPrefWidth(200); // Media Preview
+        col5.setMinWidth(150); col5.setPrefWidth(200);
         ColumnConstraints col6 = new ColumnConstraints();
-        col6.setMinWidth(100); col6.setPrefWidth(120); // Media Preview
+        col6.setMinWidth(100); col6.setPrefWidth(120);
         detailGrid.getColumnConstraints().addAll(col1, col2, col3, col4, col5, col6);
 
-        // Section: Item Details
         Label sectionItem = new Label("Item Details");
         sectionItem.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-underline: true;");
         detailGrid.add(sectionItem, 0, 0, 3, 1);
-        // Add Item Details fields
         detailGrid.add(new Label("Title:"), 0, 1);
         detailGrid.add(titleField, 1, 1, 2, 1);
         detailGrid.add(new Label("Type:"), 0, 2);
@@ -134,7 +127,6 @@ public class Main extends Application {
 
         createdAtLabel = new Label("N/A");
 
-        // Add new fields to the detail pane
         detailGrid.add(new Label("Tags:"), 0, 4);
         detailGrid.add(tagsField, 1, 4, 2, 1);
         detailGrid.add(new Label("Rating:"), 0, 5);
@@ -142,7 +134,6 @@ public class Main extends Application {
         detailGrid.add(new Label("Created At:"), 0, 6);
         detailGrid.add(createdAtLabel, 1, 6, 2, 1);
 
-        // Declare sectionActions, buttonBox, and sectionTasks
         Label sectionActions = new Label("Actions");
         sectionActions.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 10 0 0 0;");
         HBox buttonBox = new HBox(12, addBtn, editBtn, deleteBtn, undoBtn, importBtn);
@@ -153,10 +144,8 @@ public class Main extends Application {
         Button completeTaskBtn = new Button("Complete Task");
         completeTaskBtn.setOnAction(_ -> completeNextTask());
 
-        // Add the Complete Task button to the buttonBox
         buttonBox.getChildren().add(completeTaskBtn);
 
-        // Add sections to detailGrid
         detailGrid.add(sectionActions, 0, 7, 6, 1);
         detailGrid.add(buttonBox, 0, 8, 6, 1);
         detailGrid.add(sectionTasks, 0, 9, 6, 1);
@@ -171,7 +160,6 @@ public class Main extends Application {
         detailGrid.add(taskListView, 1, 12, 5, 1);
         GridPane.setMargin(taskListView, new Insets(5, 0, 0, 0));
 
-        // Set preferred widths for better appearance
         titleField.setPrefWidth(180);
         typeBox.setPrefWidth(120);
         pathField.setPrefWidth(320);
@@ -184,7 +172,6 @@ public class Main extends Application {
         mediaView.setFitWidth(400);
         mediaView.setFitHeight(250);
 
-        // Add listeners for listView selection
         listView.getSelectionModel().selectedItemProperty().addListener((_, _, newItem) -> {
             if (newItem != null) {
                 recentlyViewed.push(newItem);
@@ -195,7 +182,6 @@ public class Main extends Application {
                 ratingSlider.setValue(newItem.getRating());
                 createdAtLabel.setText(newItem.getCreatedAt().toString());
                 playMedia(newItem.getPathOrUrl(), detailGrid);
-                // Fade in animation for details
                 FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(350), detailGrid);
                 fade.setFromValue(0.3);
                 fade.setToValue(1.0);
@@ -203,16 +189,13 @@ public class Main extends Application {
             }
         });
 
-        // Section: Media Preview (right side)
         Label sectionMedia = new Label("Media Preview");
         sectionMedia.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-underline: true;");
         detailGrid.add(sectionMedia, 3, 0, 3, 1);
         detailGrid.add(mediaView, 3, 1, 3, 3);
 
-        // Add media controls
         addMediaControls(detailGrid);
 
-        // Restore button event handlers (must be after button creation)
         addBtn.setOnAction(_ -> addItem());
         editBtn.setOnAction(_ -> editItem());
         deleteBtn.setOnAction(_ -> deleteItem());
@@ -220,26 +203,22 @@ public class Main extends Application {
         importBtn.setOnAction(_ -> importFolder(stage));
         addTaskBtn.setOnAction(_ -> addStudyTask());
 
-        // Main layout
         HBox root = new HBox(20, listView, detailGrid);
         root.setPadding(new Insets(15));
-        // Make the layout fill the screen height dynamically
         root.prefHeightProperty().bind(stage.heightProperty());
         listView.prefHeightProperty().bind(stage.heightProperty().subtract(30));
         detailGrid.prefHeightProperty().bind(stage.heightProperty().subtract(30));
 
-        // Scene setup: initial height, allow resizing, maximize
-        Scene scene = new Scene(root, 900, 700); // Initial size
+        Scene scene = new Scene(root, 900, 700);
         stage.setScene(scene);
         stage.setTitle("Smart Collections – Media & Notes Manager");
-        stage.setMinHeight(600); // Minimum height for usability
-        stage.setMaximized(true); // Start maximized for full screen fit
+        stage.setMinHeight(600);
+        stage.setMaximized(true);
         stage.show();
 
         stage.setOnCloseRequest(_ -> backupOnExit());
     }
 
-    // CRUD methods
     private void addItem() {
         String title = titleField.getText().trim();
         ItemType type = typeBox.getValue();
@@ -253,7 +232,6 @@ public class Main extends Application {
             return;
         }
 
-        // Check for duplicates before adding
         boolean isDuplicate = library.stream().anyMatch(item ->
             item.getTitle().equalsIgnoreCase(title) &&
             item.getType() == type &&
@@ -275,7 +253,7 @@ public class Main extends Application {
         Item selected = listView.getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
-        undoStack.push(new Memento(selected.getId(), new Item(selected), "edit")); // store memento
+        undoStack.push(new Memento(selected.getId(), new Item(selected), "edit"));
 
         selected.setTitle(titleField.getText().trim());
         selected.setType(typeBox.getValue());
@@ -290,7 +268,7 @@ public class Main extends Application {
     private void deleteItem() {
         Item selected = listView.getSelectionModel().getSelectedItem();
         if (selected == null) return;
-        undoStack.push(new Memento(selected.getId(), new Item(selected), "delete")); // store memento
+        undoStack.push(new Memento(selected.getId(), new Item(selected), "delete"));
         library.remove(selected);
         listView.getSelectionModel().clearSelection();
         mediaView.setMediaPlayer(null);
@@ -310,22 +288,19 @@ public class Main extends Application {
         }
     }
 
-    // Media playback
     private void playMedia(String pathOrUrl, GridPane detailGrid) {
         if (pathOrUrl == null || pathOrUrl.isEmpty()) {
             mediaView.setMediaPlayer(null);
             return;
         }
 
-        // Check for supported file types
         String lowerPath = pathOrUrl.toLowerCase();
         if (!(lowerPath.endsWith(".mp3") || lowerPath.endsWith(".mp4"))) {
-            mediaView.setMediaPlayer(null); // Clear the MediaView for unsupported files
+            mediaView.setMediaPlayer(null);
             return;
         }
 
         try {
-            // Dispose of the previous MediaPlayer if it exists
             if (mediaPlayer != null) {
                 mediaPlayer.dispose();
             }
@@ -338,10 +313,8 @@ public class Main extends Application {
             mediaPlayer = new MediaPlayer(media);
             mediaView.setMediaPlayer(mediaPlayer);
 
-            // Add listeners for error handling
             mediaPlayer.setOnError(() -> mediaView.setMediaPlayer(null));
 
-            // Add media controls
             addMediaControls(detailGrid);
         } catch (Exception e) {
             mediaView.setMediaPlayer(null);
@@ -349,12 +322,10 @@ public class Main extends Application {
     }
 
     private void addMediaControls(GridPane detailGrid) {
-        // Create buttons with icons
-        Button playButton = new Button("▶"); // Play icon
-        Button pauseButton = new Button("⏸"); // Pause icon
-        Button stopButton = new Button("⏹"); // Stop icon
+        Button playButton = new Button("▶");
+        Button pauseButton = new Button("⏸");
+        Button stopButton = new Button("⏹");
 
-        // Declare and initialize mediaSlider and mediaControls properly
         Slider mediaSlider = new Slider();
         mediaSlider.setMin(0);
         mediaSlider.setValue(0);
@@ -363,7 +334,6 @@ public class Main extends Application {
         HBox mediaControls = new HBox(10, playButton, pauseButton, stopButton, mediaSlider);
         mediaControls.setPadding(new Insets(10, 0, 0, 0));
 
-        // Add listeners to update the slider as the media plays
         playButton.setOnAction(_ -> {
             if (mediaPlayer != null) {
                 mediaPlayer.play();
@@ -393,7 +363,7 @@ public class Main extends Application {
         stopButton.setOnAction(_ -> {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
-                mediaSlider.setValue(0); // Reset the slider
+                mediaSlider.setValue(0);
             } else {
                 showAlert("Media Error", "No media loaded.");
             }
@@ -405,7 +375,6 @@ public class Main extends Application {
             }
         });
 
-        // Add mediaControls to the layout
         detailGrid.add(mediaControls, 3, 4, 3, 1);
     }
 
@@ -417,7 +386,6 @@ public class Main extends Application {
         alert.showAndWait();
     }
 
-    // Recursive folder import
     private void importFolder(Stage stage) {
         DirectoryChooser chooser = new DirectoryChooser();
         File folder = chooser.showDialog(stage);
@@ -435,12 +403,12 @@ public class Main extends Application {
 
         for (File file : files) {
             if (file.isDirectory()) {
-                scanFolder(file); // recursion
+                scanFolder(file);
             } else {
                 String path = file.getAbsolutePath();
                 if (importedPaths.contains(path)) {
                     System.out.println("Skipped duplicate file: " + path);
-                    continue; // dedup
+                    continue;
 
                 }
 
@@ -463,7 +431,6 @@ public class Main extends Application {
         }
     }
 
-    // Indexing for keywords and tags
     private void indexItem(Item item) {
         String[] words = item.getTitle().split("\\s+");
         for (String word : words) {
@@ -471,18 +438,15 @@ public class Main extends Application {
             keywordIndex.computeIfAbsent(word, _ -> new HashSet<>()).add(item.getId());
         }
 
-        // Update tag frequency for the item's type
         String typeTag = item.getType().name();
         tagFrequency.put(typeTag, tagFrequency.getOrDefault(typeTag, 0) + 1);
 
-        // Update tag frequency for custom tags
         for (String tag : item.getTags()) {
             tag = tag.toLowerCase();
             tagFrequency.put(tag, tagFrequency.getOrDefault(tag, 0) + 1);
         }
     }
 
-    // Add study task
     private void addStudyTask() {
         Item selected = listView.getSelectionModel().getSelectedItem();
         if (selected == null) {
@@ -511,7 +475,6 @@ public class Main extends Application {
         tasks.sort(Task::compareTo);
         taskListView.getItems().setAll(tasks);
 
-        // Customize the display of tasks for better readability
         taskListView.setCellFactory(_ -> new ListCell<>() {
             @Override
             protected void updateItem(Task task, boolean empty) {
@@ -527,7 +490,6 @@ public class Main extends Application {
             }
         });
 
-        // Fade animation for task list refresh
         FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(350), taskListView);
         fade.setFromValue(0.3);
         fade.setToValue(1.0);
@@ -540,18 +502,18 @@ public class Main extends Application {
             return;
         }
 
-        Task completedTask = taskQueue.poll(); // Remove the next task
-        updateTaskListView(); // Refresh the task list view
+        Task completedTask = taskQueue.poll();
+        updateTaskListView();
         showAlert("Task Completed", "Completed task: " + completedTask.getDescription());
     }
 
     private void saveLibrary() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DATA_FILE))) {
-            oos.writeUTF("LIBRARY_V1"); // Versioned header
-            oos.writeObject(new ArrayList<>(library)); // Save library items
-            oos.writeObject(new HashMap<>(keywordIndex)); // Save keyword index
-            oos.writeObject(new HashMap<>(tagFrequency)); // Save tag frequency
-            oos.writeObject(new PriorityQueue<>(taskQueue)); // Save tasks
+            oos.writeUTF("LIBRARY_V1");
+            oos.writeObject(new ArrayList<>(library));
+            oos.writeObject(new HashMap<>(keywordIndex));
+            oos.writeObject(new HashMap<>(tagFrequency));
+            oos.writeObject(new PriorityQueue<>(taskQueue));
             System.out.println("Library saved successfully to " + DATA_FILE);
         } catch (IOException e) {
             showAlert("Save Error", "Could not save library: " + e.getMessage());
@@ -573,10 +535,10 @@ public class Main extends Application {
                 System.err.println("Unsupported library version: " + header);
                 return;
             }
-            library.setAll((List<Item>) ois.readObject()); // Load library items
-            keywordIndex.putAll((Map<String, Set<UUID>>) ois.readObject()); // Load keyword index
-            tagFrequency.putAll((Map<String, Integer>) ois.readObject()); // Load tag frequency
-            taskQueue.addAll((PriorityQueue<Task>) ois.readObject()); // Load tasks
+            library.setAll((List<Item>) ois.readObject());
+            keywordIndex.putAll((Map<String, Set<UUID>>) ois.readObject());
+            tagFrequency.putAll((Map<String, Integer>) ois.readObject());
+            taskQueue.addAll((PriorityQueue<Task>) ois.readObject());
             System.out.println("Library loaded successfully from " + DATA_FILE);
         } catch (OptionalDataException e) {
             System.err.println("Corrupted library file. Starting with an empty library.");
@@ -589,7 +551,6 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        // Refresh the ListView to display loaded items
         listView.setItems(library);
         listView.refresh();
     }
